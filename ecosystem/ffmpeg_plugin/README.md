@@ -157,15 +157,17 @@ ffmpeg -stream_loop -1 -video_size 1920x1080 -f rawvideo -pix_fmt yuv422p10le -i
 
 > **Note:** The default `payload_type` value for Media Transport Library raw audio is 111. Below, it is changed to 97 - a commonly used number for raw audio transmissions.
 
-### 4.1. St30p input
+### 4.1. St30p PCM24 input
 
-Reading a ST 2110-30 stream (pcm24, 1ms packet time, 2 channels) on 239.168.85.20:30000 with payload_type 97 and encoded to a wav file:
+Reading a ST 2110-30 stream (PCM24, 1ms packet time, 2 channels) on 239.168.85.20:30000 with payload_type 97 and encoded to a wav file:
 
 ```bash
 ffmpeg -p_port 0000:af:01.0 -p_sip 192.168.96.2 -p_rx_ip 239.168.85.20 -udp_port 30000 -payload_type 97 -pcm_fmt pcm24 -ptime 1ms -channels 2 -f mtl_st30p -i "0" dump.wav -y
 ```
 
-### 4.2. St30p output
+Remember to set `pcm_fmt` to `pcm24` for demuxer.
+
+### 4.2. St30p PCM24 output
 
 Reading from a wav file and sending a ST 2110-30 stream (pcm24, 1ms packet time, 2 channels) on 239.168.85.20:30000 with payload_type 97:
 
@@ -173,15 +175,25 @@ Reading from a wav file and sending a ST 2110-30 stream (pcm24, 1ms packet time,
 ffmpeg -stream_loop -1 -i test.wav -p_port 0000:af:01.1 -p_sip 192.168.96.3 -p_tx_ip 239.168.85.20 -udp_port 30000 -payload_type 97 -ptime 1ms -f mtl_st30p -
 ```
 
-### 4.3. St30p pcm16 example
+### 4.3. St30p PCM16 input
 
-For pcm16 audio, use `mtl_st30p_pcm16` muxer, set `pcm_fmt` to `pcm16` for demuxer.
+Reading from an ST 2110-30 stream (PCM16, 1ms packet time, 2 channels) on 239.168.85.20:30000 with payload_type 97 and encoded to a wav file:
+
+```bash
+ffmpeg -p_port 0000:af:01.0 -p_sip 192.168.96.2 -p_rx_ip 239.168.85.20 -udp_port 30000 -payload_type 97 -pcm_fmt pcm16 -ptime 1ms -channels 2 -f mtl_st30p -i "0" dump_pcm16.wav -y
+```
+
+Remember to set `pcm_fmt` to `pcm16` for demuxer.
+
+### 4.3. St30p PCM16 output
+
+Reading from a wav file and sending a ST 2110-30 stream (PCM16, 1ms packet time, 2 channels) on 239.168.85.20:30000 with payload_type 97:
 
 ```bash
 ffmpeg -stream_loop -1 -i test.wav -p_port 0000:af:01.1 -p_sip 192.168.96.3 -p_tx_ip 239.168.85.20 -udp_port 30000 -payload_type 97 -ptime 1ms -f mtl_st30p_pcm16 -
-
-ffmpeg -p_port 0000:af:01.0 -p_sip 192.168.96.2 -p_rx_ip 239.168.85.20 -udp_port 30000 -payload_type 97 -pcm_fmt pcm16 -ptime 1ms -channels 2 -f mtl_st30p_pcm16 -i "0" dump_pcm16.wav -y
 ```
+
+For PCM16 audio, use `mtl_st30p_pcm16` format.
 
 ## 5. St20 GPU direct guide
 
